@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+
 import { useDispatch } from 'react-redux'
 
 import { login } from "../../redux/authSlice";
@@ -20,7 +21,7 @@ const SignInForm = ({ loginHandler }) => {
         setErrMsg('');
     }, [email, pwd])
 
-    const hundlesubmit = async (e) => {
+    const hundlesubmit = async (e, history) => {
         e.preventDefault();
 
         try {
@@ -36,7 +37,8 @@ const SignInForm = ({ loginHandler }) => {
             dispatch(login());
             setEmail('');
             setPwd('');
-            setSuccess(true)
+            setSuccess(true);
+            
             // window.location.replace('http://localhost:3000/');
         } catch (err) {            
             if (!err?.response) {
