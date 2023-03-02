@@ -72,6 +72,10 @@ router.post("/login", async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "פרטי התחברות שגויים" });
         }
+
+        if (user.isDeleted) {
+            return res.status(404).json({ error: "חשבון זה אינו קיים יותר במערכת" });
+        }
         const passwordFromClient = pwd;
         const passwordFromDB = user.password;
 
@@ -89,5 +93,84 @@ router.post("/login", async (req, res) => {
     }
 })
 
+router.put("/editing", async (req, res) => {
+    const { firstName, lastName, email, pwd } = req.body;
+
+    // Validate user inputs
+    if (!FIRST_NAME_REGEX.test(firstName)) {
+        return res.status(400).json({ message: "שם פרטי לא תקין" });
+    }
+    if (!LAST_NAME_REGEX.test(lastName)) {
+        return res.status(400).json({ message: "שם משפחה לא תקין" });
+    }
+
+    if (!PASSWORD_REGEX.test(pwd)) {
+        return res.status(400).json({ message: "סיסמה לא תקינה" });
+    }
+
+
+    try {
+        User.findOneAndUpdate(
+            { email },
+            { name: { firstName, lastName }, password: await bcrypt.hash(pwd, 10) },
+            { new: true },
+            function (err, user) {
+
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('שגיאת שרת פנימית');
+                }
+                if (!user) {
+                    return res.status(404).send('לא נמצא משתמש לעדכון');
+                }
+
+                const { password, ...others } = user._doc;
+                console.log('others :', others);
+                return res.status(200).json(others);
+
+
+
+            }
+        );
+    } catch (err) {
+
+        console.error(err);
+        return res.status(500).send('שגיאת שרת פנימית');
+
+
+    }
+
+})
+
+router.put("/delete", async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        User.findOneAndUpdate(
+            { email },
+            { isDeleted: true },
+            { new: true },
+            function (err, user) {
+
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('שגיאת שרת פנימית');
+                }
+                if (!user) {
+                    return res.status(404).send('לא נמצא משתמש למחיקה');
+                }
+
+                const { password, ...others } = user._doc;
+                console.log('others :', others);
+                return res.status(200).json(others);
+
+            }
+        );
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('שגיאת שרת פנימית');
+    }
+
+})
 
 module.exports = router;

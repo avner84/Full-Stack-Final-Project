@@ -16,6 +16,7 @@ import ProductEditingPage from './pages/ProductEditingPage'
 import Navbar from './components/Navbar';
 import BackDrop from './components/BackDrop';
 import SideDrawer from './components/SideDrawer';
+import AccountDeletedPage from './pages/AccountDeletedPage';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             <Route exact path='/user_store' element={<UserStorePage />} />
             <Route exact path='/product_upload' element={<ProductUploadFormPage />} />
             <Route exact path='/product_editing' element={<ProductEditingPage />} />
+            <Route exact path='/account_deleted' element={<AccountDeletedPage />} />
             
 
                      

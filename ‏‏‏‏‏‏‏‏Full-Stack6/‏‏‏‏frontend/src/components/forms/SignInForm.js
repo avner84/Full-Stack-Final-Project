@@ -58,6 +58,12 @@ const SignInForm = ({ loginHandler }) => {
             else if (err.response?.status === 401) {
                 setErrMsg('אחד הפרטים שהוזן שגוי');
                 dispatch(loginFailure(err.response.data.error));
+                
+            }
+            else if (err.response?.status === 404) {
+                setErrMsg('חשבון זה אינו קיים יותר במערכת');
+                dispatch(loginFailure(err.response.data.error));
+                
             } else {
                 setErrMsg('ההתחברות נכשלה')
                 dispatch(loginFailure('ההתחברות נכשלה'));

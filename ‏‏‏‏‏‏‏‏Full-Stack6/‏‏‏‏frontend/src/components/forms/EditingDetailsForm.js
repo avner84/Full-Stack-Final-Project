@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from 'react-redux'
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from '../../api/axios';
 
 import { useSelector } from "react-redux";
+import {  loginSuccess } from '../../redux/userSlice';
+import DeleteAccountModal from '../DeleteAccountModal'
+
 
 const FIRST_NAME_REGEX = /^[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30}$/;
 const LAST_NAME_REGEX = /^[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30}(\s[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30})?$/;
@@ -13,9 +17,13 @@ const EDITING_URL = '/api/auth/editing';
 
 const EditingDetailsForm = ({ setSuccess }) => {
 
+    const dispatch = useDispatch();
+
     const user = useSelector((state) => state.user.currentUser);
+    
     const email = user.email;
 
+    
     const [firstName, setFirstName] = useState(user.name.firstName);
     const [validFirstName, setvalidFirstName] = useState(true);
 
@@ -31,7 +39,7 @@ const EditingDetailsForm = ({ setSuccess }) => {
 
     const [errMsg, setErrMsg] = useState('');
 
-
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const result = FIRST_NAME_REGEX.test(firstName)
@@ -73,18 +81,12 @@ const EditingDetailsForm = ({ setSuccess }) => {
                     withCredentials: true
                 }
             );
-            console.log(response.data);
-            console.log(response.accessToken);
+            
             console.log(JSON.stringify(response))
+            dispatch(loginSuccess(response?.data));
             setSuccess(true);
-            //clear state and controlled inputs
-            //need value attrib on inputs for this
-            setFirstName('');
-            setLastName('');
-
-            setPwd('');
-            setMatchPwd('');
-            //Add an ALERT or MODAL message that the registration was successful and direct the user to an email to verify the account
+            
+            
         }
         catch (err) {
             if (!err?.response) {
@@ -101,8 +103,15 @@ const EditingDetailsForm = ({ setSuccess }) => {
         }
     }
 
+    const hundleDeleteAccountModal = () =>{
+        setShowDeleteModal(true)
+    }
+
     return (
-        <div className='wrapper'>
+        showDeleteModal?
+        <DeleteAccountModal setShowDeleteModal={setShowDeleteModal}/>
+        :
+        (<div className='wrapper'>
             <div className='form_container'>
                 <div className='heading'>
                     <h2>עריכת פרטי משתמש</h2>
@@ -176,13 +185,14 @@ const EditingDetailsForm = ({ setSuccess }) => {
                         <input type="submit" value="עדכן" disabled={!validFirstName || !validLastName || !validPwd || !validMatch ? true : false} />
                     </div>
                     <div className='fogate_pass_wrap deleteUserAccountBtn_warp'>
-                        <input className="deleteUserAccountBtn" type="button" value="מחק חשבון משתמש" />
+                        <input className="deleteUserAccountBtn" type="button" value="מחק חשבון משתמש" onClick={hundleDeleteAccountModal}/>
                     </div>
 
                 </form>
             </div>
-        </div>
-    )
+        </div>)
+        )
+      
 }
 
 export default EditingDetailsForm
