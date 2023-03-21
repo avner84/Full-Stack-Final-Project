@@ -22,7 +22,7 @@ const cartSlice = createSlice({
                 existingProduct.amount += quantity;
 
             } else {
-                const newProduct = Object.assign(product, { amount: quantity })
+                const newProduct = { ...product, amount: quantity };
 
                 state.cartProducts.push(newProduct);
             }

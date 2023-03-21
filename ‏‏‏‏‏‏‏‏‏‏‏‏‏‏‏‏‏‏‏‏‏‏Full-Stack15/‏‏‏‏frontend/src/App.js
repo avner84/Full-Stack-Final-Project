@@ -12,7 +12,6 @@ import EditingDetailsPage from "./pages/EditingDetailsPage";
 import UserStorePage from './pages/UserStorePage'
 import ProductUploadFormPage from './pages/ProductUploadFormPage'
 import ProductEditingPage from './pages/ProductEditingPage'
-import TestPage from './pages/TestPage'
 
 import Navbar from './components/Navbar';
 import BackDrop from './components/BackDrop';
@@ -21,6 +20,7 @@ import AccountDeletedPage from './pages/AccountDeletedPage';
 import AlertsPages from './pages/AlertsPages';
 import ConfirmedAccountAlert from './components/alerts/ConfirmedAccountAlert';
 import UnconfirmedAccountAlert from './components/alerts/UnconfirmedAccountAlert';
+import ProductSuccessfullyAdded from './components/alerts/ProductSuccessfullyAdded';
 
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
             <Route exact path='/account_deleted' element={<AccountDeletedPage />} />
             <Route exact path='/account_confirmed' element={<AlertsPages alert={<ConfirmedAccountAlert/>} />} />
             <Route exact path='/account_unconfirmed' element={<AlertsPages alert={<UnconfirmedAccountAlert/>} />} />
-            <Route exact path='/testPage' element={<TestPage/>} />
+            <Route exact path='/ProductSuccessfullyAdded' element={<AlertsPages alert={<ProductSuccessfullyAdded/>} />} />
             
 
                      

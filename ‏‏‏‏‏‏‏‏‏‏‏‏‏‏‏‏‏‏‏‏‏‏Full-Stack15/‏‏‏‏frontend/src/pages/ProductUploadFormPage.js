@@ -2,21 +2,32 @@ import './ProductUploadFormPage.css'
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import { fetchProducts } from '../redux/productsActions';
 
-const PRODUC_TֹTITLE_REGEX = /^[a-zA-Zא-ת]+[\s_-]?[a-zA-Zא-ת]*$/;
-const PRODUCT_DESCRIPTION_REGEX = /^[\u0590-\u05FF\s\d\w]{1,100}$|^[\s\d\w]{1,100}$/;
+const PRODUC_TֹTITLE_REGEX = /^[\u0590-\u05FF\s\w\d\p{P}\p{S}!._,-?]{1,50}$/;
+const PRODUCT_DESCRIPTION_REGEX = /^[\u0590-\u05FF\s\w\d\p{P}\p{S}!._,-?]{1,300}$/;
 const PRODUCT_PRICE_REGEX = /^[1-9]\d*$/;
 const PRODUCT_CATEGORY_REGEX = /^[א-ת ]{2,20}$/;
 
 const  CREATE_PRODUCT_URL = '/api/products/createProduct';
 
-//Product description
+function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) {
+        return parts.pop().split(";").shift();
+    }
+}
 
 const ProductUploadFormPage = () => {
-
+    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const user= useSelector((state)=>state.user.currentUser);
+
     const [productTitle, setProductTitle] = useState('');
     const [validProductTitle, setvalidProductTitle] = useState(false);
 
@@ -29,6 +40,7 @@ const ProductUploadFormPage = () => {
     const [category, setCategory] = useState('');
     const [validCategory, setValidCategory] = useState(false);
 
+    const [errMsg, setErrMsg] = useState(''); 
 
     useEffect(() => {
         const result = PRODUC_TֹTITLE_REGEX.test(productTitle)
@@ -52,6 +64,18 @@ const ProductUploadFormPage = () => {
 
     const hundlesubmit = async (e) => {
         e.preventDefault();
+
+         // if button enabled with JS hack
+         const v1 = PRODUC_TֹTITLE_REGEX.test(productTitle);
+         const v2 = PRODUCT_DESCRIPTION_REGEX.test(productDescription);
+         const v3 = PRODUCT_PRICE_REGEX.test(price);
+         const v4 = PRODUCT_CATEGORY_REGEX.test(category);
+         if (!v1 || !v2 || !v3 || !v4) {
+             setErrMsg("אחד הפרטים שהוזנו לא עומד בכללי הפורמט");
+             return;
+         }
+
+        
         const data = new FormData();        
         data.append('title', productTitle);
         data.append('description', productDescription);
@@ -61,15 +85,31 @@ const ProductUploadFormPage = () => {
         data.append('file', e.target[4].files[0]);
         
         try {
-            
+           const loginVerificationToken = getCookie("loginVerification"); 
             const response = await axios.post(CREATE_PRODUCT_URL, data, {
                 headers: { 
-                    'Content-Type': ' multipart/form-data'
+                    'Content-Type': ' multipart/form-data',
+                    Authorization: `Bearer ${loginVerificationToken}`
                 }
             });
             console.log('Success:', response);
-        } catch (error) {
-            console.error('Error:', error);
+
+            setProductTitle('');
+            setProductDescription('');
+            setPrice(0);
+            setCategory('');
+            e.target[4].value = null; //clear file input
+            dispatch(fetchProducts());
+            navigate("/ProductSuccessfullyAdded");
+
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('אין תשובה מהשרת');
+                
+            }
+            else{
+                setErrMsg('לא הצלחנו להעלות את המוצר. נסה להתנתק ולהתחבר מחדש.');
+            }
         }
     }
 
@@ -79,6 +119,7 @@ const ProductUploadFormPage = () => {
                 <div className='heading'>
                     <h2>הוספת מוצר</h2>
                 </div>
+                <p className={errMsg ? "errmsg" : "offscreen"}>{errMsg}</p>
                 <form onSubmit={hundlesubmit}>
                     <div className='form_wrap'>
                         <div className='form_item'>
@@ -173,5 +214,7 @@ const ProductUploadFormPage = () => {
         </div>
     )
 }
+
+
 
 export default ProductUploadFormPage
