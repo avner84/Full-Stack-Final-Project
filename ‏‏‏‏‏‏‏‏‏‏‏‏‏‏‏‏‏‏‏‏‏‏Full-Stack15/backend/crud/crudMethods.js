@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Product = require("../models/Product");
 
 function deleteUser(email, res) {
     try {
@@ -56,4 +57,32 @@ function userDeleteByServer (email){
     }
 }
 
-module.exports = {deleteUser,userDeleteByServer}
+
+function deleteProduct(productId, res) {
+    try {
+        Product.findOneAndUpdate(
+            { _id : productId},
+            { isDeleted: true },
+            { new: true },
+            function (err, product) {
+
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('שגיאת שרת פנימית');
+                }
+                if (!product) {
+                    return res.status(404).send('לא נמצא מוצר למחיקה');
+                }
+                
+                console.log('product :', product._doc);
+                return res.status(200).json(product._doc);
+
+            }
+        );
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('שגיאת שרת פנימית');
+    }
+}
+
+module.exports = {deleteUser,userDeleteByServer, deleteProduct}

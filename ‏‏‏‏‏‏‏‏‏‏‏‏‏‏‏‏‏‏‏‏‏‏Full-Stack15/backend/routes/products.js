@@ -3,6 +3,7 @@ const Product = require("../models/Product")
 const multer = require('multer');
 const path = require('path');
 const jsonWebToken = require("../api/jsonWebToken");
+const crudMethods = require("../crud/crudMethods");
 
 
 
@@ -76,8 +77,39 @@ router.put("/deleteProduct",checkAuthHeader, async (req, res) => {
   const { productId } = req.body;
   console.log('productId :', productId);
 
-  //crudMethods.deleteUser(email, res);
+  crudMethods.deleteProduct(productId, res);
 
+})
+
+router.put('/editProduct', checkAuthHeader, upload.single('file'), (req, res) => {
+  console.log('Axios POST body: ', req.body);
+  console.log('req.file:', req.file);
+  const { title, description, price, category , productId } = req.body;
+
+  try {
+    Product.findOneAndUpdate(
+      { _id:productId },
+      { title, description, imgUrl: req.file.filename, price, category },
+      { new: true },
+      function (err, product) {
+
+          if (err) {
+              console.error(err);
+              return res.status(500).send('שגיאת שרת פנימית');
+          }
+          if (!product) {
+              return res.status(404).send('לא נמצא מוצר לעדכון');
+          }
+          
+          console.log('product :', product._doc);
+          return res.status(200).json(product._doc);
+      }
+  );
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('שגיאת שרת פנימית');
+
+  }
 })
 
 

@@ -1,9 +1,8 @@
 import './StoreItem.css'
-
+import { Link } from 'react-router-dom';
 const StoreItem = ({product, setShowDeleteProductModal, setProductIdForDelete}) => {
 
-    //const product = props.product;
-    
+          
     const handleDelete =()=>{
         setShowDeleteProductModal(true)
         setProductIdForDelete(product._id)
@@ -32,11 +31,12 @@ const StoreItem = ({product, setShowDeleteProductModal, setProductIdForDelete}) 
                 <p>{product.description}</p>
             </div>
 
-            <div className='storeItem__btns'>              
+            <div className='storeItem__btns'>
+            <Link to={`/product_editing/${product._id}`}>              
                 <button className='storeItem__editBtn'>
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                 </button>
-
+                </Link>
                 <button className='storeItem__deleteBtn' onClick={handleDelete}>
                     <i className="fa fa-trash" ></i>
                 </button>

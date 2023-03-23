@@ -14,7 +14,7 @@ const CartItem = (props) => {
       };
 
       const handleRemoveProduct=()=>{
-        dispatch(removeProduct(product.productId))
+        dispatch(removeProduct(product._id))
       }
     
     return (
@@ -22,7 +22,7 @@ const CartItem = (props) => {
             <div className='cartItem__image'>
                 <img src={product.imgUrl} alt={product.title} />
             </div>
-            <Link to={`/product/${product.productId}`} className="cartItem__name">
+            <Link to={`/product/${product._id}`} className="cartItem__name">
                 <p>{product.title}</p>
             </Link>
 

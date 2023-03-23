@@ -19,12 +19,12 @@ const SideDrawer = ({ show, click }) => {
     <ul className='sidedrawer__links' onClick={click}>
       {!user && <LinkForGuest />}
       {user && <LinkForUser />}
-      <li >
+      {user &&<li >
         <Link to='/cart'>
           <i className="fas fa-cart-shopping" />
           <span className='sidedrawer__cartbadge'>{totalAmount}</span>
         </Link>
-      </li>
+      </li>}
     </ul>
 
   </div>;

@@ -28,7 +28,7 @@ const DeleteProductModal = ({ setShowDeleteProductModal, setProductIdForDelete, 
             
             setProductIdForDelete("");
             dispatch(fetchProducts());
-            navigate("/account_deleted");
+            navigate("/ProductDeletedSuccessfully");
             
         }
         catch (err) {

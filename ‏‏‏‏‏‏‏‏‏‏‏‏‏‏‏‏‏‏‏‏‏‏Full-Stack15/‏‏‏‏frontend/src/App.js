@@ -21,6 +21,8 @@ import AlertsPages from './pages/AlertsPages';
 import ConfirmedAccountAlert from './components/alerts/ConfirmedAccountAlert';
 import UnconfirmedAccountAlert from './components/alerts/UnconfirmedAccountAlert';
 import ProductSuccessfullyAdded from './components/alerts/ProductSuccessfullyAdded';
+import ProductDeletedSuccessfully from './components/alerts/ProductDeletedSuccessfully';
+import ProductEditedSuccessfully from './components/alerts/ProductEditedSuccessfully';
 
 
 function App() {
@@ -43,11 +45,13 @@ function App() {
             <Route exact path='/edit_details' element={<EditingDetailsPage />} />
             <Route exact path='/user_store' element={<UserStorePage />} />
             <Route exact path='/product_upload' element={<ProductUploadFormPage />} />
-            <Route exact path='/product_editing' element={<ProductEditingPage />} />
+            <Route exact path='/product_editing/:id' element={<ProductEditingPage />} />
             <Route exact path='/account_deleted' element={<AccountDeletedPage />} />
             <Route exact path='/account_confirmed' element={<AlertsPages alert={<ConfirmedAccountAlert/>} />} />
             <Route exact path='/account_unconfirmed' element={<AlertsPages alert={<UnconfirmedAccountAlert/>} />} />
             <Route exact path='/ProductSuccessfullyAdded' element={<AlertsPages alert={<ProductSuccessfullyAdded/>} />} />
+            <Route exact path='/ProductDeletedSuccessfully' element={<AlertsPages alert={<ProductDeletedSuccessfully/>} />} />
+            <Route exact path='/productEditedSuccessfully' element={<AlertsPages alert={<ProductEditedSuccessfully/>} />} />
             
 
                      

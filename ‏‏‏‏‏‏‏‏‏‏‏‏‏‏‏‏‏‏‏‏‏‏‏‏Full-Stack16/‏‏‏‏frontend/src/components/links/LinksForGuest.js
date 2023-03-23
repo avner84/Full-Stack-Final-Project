@@ -6,7 +6,7 @@ const LinkForGuest = () => {
             <li>
                 <Link to='/register'>הירשם</Link>
             </li>
-            <li>
+            <li className='signinLink'>
                 <Link to='/signin'>התחבר</Link>
             </li>
         </>

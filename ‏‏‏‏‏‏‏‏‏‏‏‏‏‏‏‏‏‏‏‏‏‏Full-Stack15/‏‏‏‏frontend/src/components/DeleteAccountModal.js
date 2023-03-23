@@ -28,10 +28,9 @@ function DeleteAccountModal({ setShowDeleteModal }) {
             );
 
             console.log(JSON.stringify(response))
-            
-            navigate("/account_deleted");
+                        
             dispatch(logout());
-
+            navigate("/account_deleted");
         }
         catch (err) {
             if (!err?.response) {

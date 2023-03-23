@@ -5,7 +5,10 @@ import { useDispatch } from 'react-redux'
 
 import { login } from "../../redux/authSlice";
 import { loginStart, loginSuccess, loginFailure } from '../../redux/userSlice';
+import { setCartProducts } from '../../redux/cartSlice'
 import axios from "../../api/axios";
+import { FetchCartFromDB } from '../../api/FetchCartFromDB'
+
 const LOGIN_URL = '/api/auth/login'
 
 
@@ -36,13 +39,19 @@ const SignInForm = ({ loginHandler }) => {
                 }
             )
             console.log(JSON.stringify(response?.data));
+            const user = response.data;
+            console.log('user :', user);
+
             dispatch(login());
-            dispatch(loginSuccess(response?.data));
+            dispatch(loginSuccess(user));
 
             setEmail('');
             setPwd('');
-
             navigate("/");
+            const cartForReduxStore = await FetchCartFromDB(user._id);
+            console.log('=========================');
+            console.log('cartForReduxStore :', cartForReduxStore);
+            dispatch(setCartProducts(cartForReduxStore))
 
         } catch (err) {
 
@@ -58,12 +67,12 @@ const SignInForm = ({ loginHandler }) => {
             else if (err.response?.status === 401) {
                 setErrMsg('החשבון לא אומת או שאחד הפרטים שהוזן שגוי');
                 dispatch(loginFailure(err.response.data.error));
-                
+
             }
             else if (err.response?.status === 404) {
                 setErrMsg('חשבון זה אינו קיים יותר במערכת');
                 dispatch(loginFailure(err.response.data.error));
-                
+
             } else {
                 setErrMsg('ההתחברות נכשלה')
                 dispatch(loginFailure('ההתחברות נכשלה'));

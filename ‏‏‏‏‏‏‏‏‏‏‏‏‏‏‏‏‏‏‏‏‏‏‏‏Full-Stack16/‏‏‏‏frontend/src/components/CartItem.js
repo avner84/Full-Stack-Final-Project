@@ -16,7 +16,7 @@ const CartItem = (props) => {
       const handleRemoveProduct=()=>{
         dispatch(removeProduct(product._id))
       }
-    
+      
     return (
         <div className='cartItem'>
             <div className='cartItem__image'>

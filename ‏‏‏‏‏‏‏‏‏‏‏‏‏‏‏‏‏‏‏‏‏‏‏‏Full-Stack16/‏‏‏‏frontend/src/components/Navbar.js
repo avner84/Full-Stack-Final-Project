@@ -28,12 +28,12 @@ const Navbar = ({ click }) => {
                 <ul className='navbar_links'>
                     {!user&&<LinkForGuest />}
                     {user&&<LinkForUser/>}
-                    <li className='cart_link_li'>
+                    {user&& <li className='cart_link_li'>
                         <Link className='cart_link' to='/cart'>
                             <i className="fas fa-cart-shopping" />
                             <span className='cartLogo_badget'>{totalAmount}</span>
                         </Link>
-                    </li>
+                    </li>}
                 </ul>
 
                 <div className='hamburger_menu' onClick={click}>
