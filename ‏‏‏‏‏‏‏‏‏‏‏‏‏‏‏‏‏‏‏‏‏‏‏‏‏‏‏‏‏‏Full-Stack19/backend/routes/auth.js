@@ -4,27 +4,24 @@ const bcrypt = require('bcrypt');
 const emailManager = require("../emailManager/emailManager");
 const jsonWebToken = require("../api/jsonWebToken");
 const crudMethods = require("../crud/crudMethods");
+const regexConstants = require('../validation-forms/regexConstants');
 
-const FIRST_NAME_REGEX = /^[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30}$/;
-const LAST_NAME_REGEX = /^[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30}(\s[\u0590-\u05FF\uFB1D-\uFB4F\w']{2,30})?$/;
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,24}$/;
 
 router.post("/register", async (req, res) => {
     const { firstName, lastName, email, pwd } = req.body;
     let lowerCaseEmail = email.toLowerCase();
 
     // Validate user inputs
-    if (!FIRST_NAME_REGEX.test(firstName)) {
+    if (!regexConstants.FIRST_NAME_REGEX.test(firstName)) {
         return res.status(400).json({ message: "שם פרטי לא תקין" });
     }
-    if (!LAST_NAME_REGEX.test(lastName)) {
+    if (!regexConstants.LAST_NAME_REGEX.test(lastName)) {
         return res.status(400).json({ message: "שם משפחה לא תקין" });
     }
-    if (!EMAIL_REGEX.test(lowerCaseEmail)) {
+    if (!regexConstants.EMAIL_REGEX.test(lowerCaseEmail)) {
         return res.status(400).json({ message: "כתובת אימייל לא תקינה" });
     }
-    if (!PASSWORD_REGEX.test(pwd)) {
+    if (!regexConstants.PASSWORD_REGEX.test(pwd)) {
         return res.status(400).json({ message: "סיסמה לא תקינה" });
     }
 
