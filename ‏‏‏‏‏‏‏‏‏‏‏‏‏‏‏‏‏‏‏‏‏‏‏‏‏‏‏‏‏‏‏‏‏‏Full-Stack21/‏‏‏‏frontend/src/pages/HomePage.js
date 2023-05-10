@@ -12,7 +12,7 @@ function HomePage() {
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch]);  
+  }, []);  
 
   const products = useSelector((state) => state.products.products);
   const productsStatus = useSelector((state) => state.products.status);
