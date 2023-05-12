@@ -32,28 +32,25 @@ async function createUser(firstName, lastName, email, pwd) {
    
 }
 
-async function deleteUser(email, res) {
-    try {
-        const user = await User.findOneAndUpdate({ email }, { isDeleted: true }, { new: true });
-        if (!user) {
-            return res.status(404).send('לא נמצא משתמש למחיקה');
-        }
-        const { password, ...others } = user._doc;
-        console.log('others :', others);
-        return res.status(200).json(others);
-    } catch (err) {
-        console.error(err);
-        return res.status(500).send('שגיאת שרת פנימית');
-    }
-}
+async function deleteUser(email){
 
-async function userDeleteByServer(email) {
     try {
         const user = await User.findOneAndUpdate(
             { email },
             { isDeleted: true },
             { new: true }
-        ).exec();
+            ).exec();
+       return user;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+
+}
+
+async function userDeleteByServer(email) {
+    try {
+        const user = await deleteUser(email);
 
         if (!user) {
             return { error: "No user found" };
@@ -71,7 +68,6 @@ async function userDeleteByServer(email) {
 
 async function deleteUserIfInactive(newUser) {
 console.log('newUser :', newUser);
-console.log('=========== deleteUserIfInactive played ===========');
     try {
         const user = await findUser(newUser.email)
 
@@ -88,4 +84,4 @@ console.log('=========== deleteUserIfInactive played ===========');
 }
 
 
-module.exports = { createUser, findUser, deleteUser, deleteUserIfInactive }
+module.exports = { createUser, findUser, deleteUserIfInactive, deleteUser }

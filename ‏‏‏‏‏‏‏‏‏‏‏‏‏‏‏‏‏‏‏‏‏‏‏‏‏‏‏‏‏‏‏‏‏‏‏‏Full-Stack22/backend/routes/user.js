@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const userController = require("../controllers/userController");
 const crudMethods = require("../crud/crudMethods");
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
@@ -9,8 +10,21 @@ const authUser = require('../middleware/authUser');
 
 router.put("/delete",authUser.checkAuthHeader, async (req, res) => {
     const { email } = req.body;
-
-    crudMethods.deleteUser(email, res);
+    
+    try {
+        const user = await userController.deleteUser(email);
+        if (!user){
+            return res.status(404).send('לא נמצא משתמש למחיקה'); 
+        } 
+        const { password, ...others } = user._doc;
+        console.log('others :', others);
+        return res.status(200).json(others);
+    } catch (error) {
+        console.error(err);
+        return res.status(500).send('שגיאת שרת פנימית');
+    }
+    
+    
 
 })
 
