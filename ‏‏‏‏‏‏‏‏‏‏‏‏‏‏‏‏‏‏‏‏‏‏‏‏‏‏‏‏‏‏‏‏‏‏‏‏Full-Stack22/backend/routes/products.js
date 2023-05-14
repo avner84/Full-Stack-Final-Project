@@ -22,6 +22,33 @@ router.post("/createProduct", authUser.checkAuthHeader, upload.single('file'), a
   console.log('req.file:', req.file);
   const { title, description, price, category, selerId } = req.body;
 
+  //Validation:
+
+  if (typeof title !== 'string' || title.trim().length === 0) {
+    console.log('כותרת המוצר חסרה או שהוזנה בפורמט לא תקין');
+    return res.status(400).send('כותרת המוצר חסרה או שהוזנה בפורמט לא תקין');
+  }
+
+  if (typeof description !== 'string' || description.trim().length === 0) {
+    console.log('תיאור המוצר חסר או שהוזן בפורמט לא תקין');
+    return res.status(400).send('תיאור המוצר חסר או שהוזן בפורמט לא תקין');
+  }
+
+  if ((typeof price !== 'number' && typeof price !== 'string') || parseFloat(price) <= 0) {
+    console.log('מחיר המוצר אינו תקין או שהוזן בפורמט שאינו תקני');
+    return res.status(400).send('מחיר המוצר אינו תקין או שהוזן בפורמט שאינו תקני');
+  }
+
+  if (typeof category !== 'string' || category.trim().length === 0) {
+    console.log('קטגוריית המוצר חסרה או שהוזנה בפורמט לא תקין');
+    return res.status(400).send('קטגוריית המוצר חסרה או שהוזנה בפורמט לא תקין');
+  }
+
+  if (typeof selerId !== 'string' || selerId.trim().length === 0) {
+    console.log('ה-selerId אינו תקין');
+    return res.status(400).send('ה-selerId אינו תקין');
+  }
+
   const imgUrl = req.file.filename;
 
   try {

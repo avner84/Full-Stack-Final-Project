@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const userController = require("../controllers/userController");
-const crudMethods = require("../crud/crudMethods");
-const User = require("../models/User");
-const bcrypt = require('bcrypt');
+
 const regexConstants = require('../validation-forms/regexConstants');
 const authUser = require('../middleware/authUser');
 
@@ -46,19 +44,13 @@ router.put("/editing",authUser.checkAuthHeader, async (req, res) => {
    
 
     try {
-        const updatedUser = await User.findOneAndUpdate(
-            { email },
-            { name: { firstName, lastName }, password: await bcrypt.hash(pwd, 10) },
-            { new: true }
-        ).exec();
-
+        const updatedUser = await userController.editUser(firstName, lastName, email, pwd);
+     
         if (!updatedUser) {
             return res.status(404).send('לא נמצא משתמש לעדכון');
         }
-
-        const { password, ...others } = updatedUser._doc;
-        console.log('others :', others);
-        return res.status(200).json(others);
+     
+        return res.status(200).json(updatedUser);
 
     } catch (err) {
 

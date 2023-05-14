@@ -83,5 +83,20 @@ console.log('newUser :', newUser);
 
 }
 
+async function editUser(firstName, lastName, email, pwd){
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { email },
+            { name: { firstName, lastName }, password: await bcrypt.hash(pwd, 10) },
+            { new: true }
+        ).exec();
 
-module.exports = { createUser, findUser, deleteUserIfInactive, deleteUser }
+        const { password, ...others } = updatedUser._doc;
+        return others;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+module.exports = { createUser, findUser, deleteUserIfInactive, deleteUser, editUser }
