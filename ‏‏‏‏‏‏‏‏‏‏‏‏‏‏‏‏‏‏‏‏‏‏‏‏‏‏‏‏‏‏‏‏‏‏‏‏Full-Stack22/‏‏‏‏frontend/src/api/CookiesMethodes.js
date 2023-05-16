@@ -4,8 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { loginSuccess } from '../redux/userSlice';
 import { setCartProducts } from '../redux/cartSlice'
+import {setOrders} from '../redux/ordersSlice'
 
 import { FetchCartFromDB } from '../api/FetchCartFromDB'
+
+import {FetchOrdersFromDB} from '../api/FetchOrdersFromDB'
+
+
 
 
 
@@ -30,6 +35,8 @@ export async function SigninUserByToken() {
                 console.log('userID :', user._id);
                 const cartForReduxStore = await FetchCartFromDB(user._id);
                 dispatch(setCartProducts(cartForReduxStore));
+                const ordersForReduxStore = await FetchOrdersFromDB(user._id);
+                dispatch(setOrders(ordersForReduxStore));
             } catch (error) {
                 console.log(error);
             }

@@ -84,7 +84,7 @@ small {
 .form_item input[type='text'],
 .form_item input[type='email'],
 .form_item input[type='password'],
-.form_item input[type='number']{
+.form_item input[type='number'] {
   width: 100%;
   padding: 10px;
   font-size: 12px;
@@ -92,7 +92,8 @@ small {
   border-radius: 3px;
 }
 
-.form_item select, textarea{
+.form_item select,
+textarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -286,7 +287,7 @@ input[type="submit"][disabled] {
 
 }
 
-.DeleteAccountModalBtns button:hover{
+.DeleteAccountModalBtns button:hover {
   cursor: pointer;
   background-color: azure;
   font-weight: 700;
@@ -294,12 +295,12 @@ input[type="submit"][disabled] {
 
 /* =================== */
 
-.account_delete_div{
+.account_delete_div {
   padding: 50px 0px;
   text-align: center;
 }
 
-.success_warp{
+.success_warp {
   text-align: center;
 }
 
@@ -307,3 +308,48 @@ input[type="submit"][disabled] {
 .signinLink {
   margin-left: 30px;
 }
+
+/* =====OrderItem:====== */
+
+.orderItem {
+  width: 100%;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 2fr;
+  gap: 8px;
+  background: #fff;
+  border-radius: 2px;
+  place-items: center;
+  margin-bottom: 8px;
+}
+
+.orderItem__title {
+  text-decoration: none;
+  color: var(--main_blue);
+  font-weight: bold;
+}
+
+.orderItem__image{
+  width: 100%;
+  height: 170px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.orderItem__TotalPrice{
+  color: var(--main_orange);
+  font-weight: bold;
+}
+
+
+@media (max-width: 700px) {
+  .orderItem__title {
+    font-size: 0.8rem;
+  }
+  
+  .orderItem__price {
+      font-size: 0.8rem;
+    }
+}
+
+/* =========== */

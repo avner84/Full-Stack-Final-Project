@@ -19,7 +19,7 @@ const EditingDetailsForm = ({ setSuccess }) => {
 
     const user = useSelector((state) => state.user.currentUser);
     
-    const email = user.email;
+    const email = user?.email ?? '';
 
     
     const [firstName, setFirstName] = useState(user.name.firstName);

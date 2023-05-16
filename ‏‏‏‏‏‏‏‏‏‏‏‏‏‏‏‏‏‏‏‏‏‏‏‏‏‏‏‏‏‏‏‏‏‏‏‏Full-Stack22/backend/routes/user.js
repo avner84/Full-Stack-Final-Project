@@ -1,13 +1,21 @@
 const router = require('express').Router();
 const userController = require("../controllers/userController");
 
-const regexConstants = require('../validation-forms/regexConstants');
+const regexConstants = require('../validations/regexConstants');
+const userValidations = require('../validations/userValidations');
 const authUser = require('../middleware/authUser');
 
 
 
 router.put("/delete",authUser.checkAuthHeader, async (req, res) => {
     const { email } = req.body;
+    
+//validation:
+    const validationErrorUserEmail = userValidations.validUserEmail(email);
+  if (validationErrorUserEmail) {
+    console.log(validationErrorUserEmail);
+    return res.status(400).send(validationErrorUserEmail);
+  }
     
     try {
         const user = await userController.deleteUser(email);

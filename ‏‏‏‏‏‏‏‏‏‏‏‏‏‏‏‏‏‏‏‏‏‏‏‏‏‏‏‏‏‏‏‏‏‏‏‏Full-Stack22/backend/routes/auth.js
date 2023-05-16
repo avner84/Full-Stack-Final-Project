@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const emailManager = require("../emailManager/emailManager");
 const jsonWebToken = require("../api/jsonWebToken");
 const userController = require("../controllers/userController");
-const regexConstants = require('../validation-forms/regexConstants');
+const regexConstants = require('../validations/regexConstants');
 const authUser = require('../middleware/authUser');
 const { responseWithToken } = require('../utils/responseWithToken');
 

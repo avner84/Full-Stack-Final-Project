@@ -109,21 +109,19 @@ const cartSlice = createSlice({
             state.totalPrice = action.payload.totalPrice;
             state.cartProducts = action.payload.cartProducts;
 
-            // state.cartProducts = action.payload;
-            // let amount = 0;
-            // let total = 0;
-            // state.cartProducts.forEach((product) => {
-            //     amount += product.amount;
-            //     total += product.amount * product.price;
-            // });
-            // state.totalAmount = amount;
-            // state.totalPrice = total;
+           
         },
         emptyCart: (state) => {
             state.cartProducts = [];
             state.totalAmount = 0;
             state.totalPrice = 0;
-            state.userId = null;
+           
+
+            const userId = state.userId;
+            const totalAmount = state.totalAmount;
+            const totalPrice = state.totalPrice;
+            const cartProducts = { ...state.cartProducts }
+            UpdateCartInDB({ cartProducts, userId, totalAmount, totalPrice });
         }
 
     }

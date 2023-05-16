@@ -24,6 +24,7 @@ import ProductSuccessfullyAdded from './components/alerts/ProductSuccessfullyAdd
 import ProductDeletedSuccessfully from './components/alerts/ProductDeletedSuccessfully';
 import ProductEditedSuccessfully from './components/alerts/ProductEditedSuccessfully';
 import UserNotLoggedIn from './components/alerts/UserNotLoggedIn';
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
             <Route exact path='/edit_details' element={<EditingDetailsPage />} />
             <Route exact path='/user_store' element={<UserStorePage />} />
             <Route exact path='/product_upload' element={<ProductUploadFormPage />} />
+            <Route exact path='/my_order' element={<OrdersPage />} />
             <Route exact path='/product_editing/:id' element={<ProductEditingPage />} />
             <Route exact path='/account_deleted' element={<AccountDeletedPage />} />
             <Route exact path='/account_confirmed' element={<AlertsPages alert={<ConfirmedAccountAlert/>} />} />

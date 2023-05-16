@@ -1,5 +1,6 @@
 const paypal = require('paypal-rest-sdk');
 const dotenv = require('dotenv').config();
+const Orders = require("../models/Orders");
 
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
@@ -11,12 +12,12 @@ const createPayment = async (req, res) => {
     try {
         console.log("req.body: ", req.body);
         const { cartProducts, totalAmount, totalPrice } = req.body;
-        
+
         //Validation:
         if (typeof totalPrice !== 'number' || totalPrice < 1) {
             console.log('הסכום שהוזן לתשלום אינו תקין');
             return res.status(400).send('הסכום שהוזן לתשלום אינו תקין');
-          }
+        }
 
         const total = totalPrice.toFixed(2).toString();
         console.log('total :', total);
@@ -91,7 +92,58 @@ const executePayment = async (req, res) => {
     }
 };
 
+//=====
+
+const updateOrdersInDB = async (orders, userId) => {
+    try {
+        const existingOrders = await Orders.findOne({ userId });
+
+        if (!existingOrders) {
+            const newOrders = await Orders.create({
+                userId,
+                orders
+            });
+
+            return newOrders;
+        }
+
+        const updatedOrders = await Orders.findOneAndUpdate(
+            { userId },
+            { orders },
+            { new: true }
+        );
+
+        return updatedOrders;
+    } catch (error) {
+        throw new Error(error.message || "שגיאת שרת פנימית");
+    }
+};
+
+
+const fetchOrders = async (userId) => {
+    try {
+        const existingOrders = await Orders.findOne({ userId });
+
+        if (existingOrders) {
+            return existingOrders;
+        }
+        else {
+            return existingOrders = {
+                orders: [],
+                userId: userId,
+            }
+        }
+
+    } catch (error) {
+        console.error(error);
+        throw new Error("Server Error");
+    }
+
+}
+
 module.exports = {
     createPayment,
-    executePayment
+    executePayment,
+    updateOrdersInDB,
+    fetchOrders
 };

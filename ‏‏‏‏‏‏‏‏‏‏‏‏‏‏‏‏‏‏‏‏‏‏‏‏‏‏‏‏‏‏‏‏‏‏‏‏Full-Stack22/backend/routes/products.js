@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const productController = require("../controllers/productController")
 const authUser = require('../middleware/authUser');
-const {upload} = require("../controllers/productController")
+const {upload} = require("../controllers/productController");
+const productValidations = require('../validations/productValidations');
+const validateFile = require('../validations/validateFile');
 
 
 router.get("/fetchProducts", async (req, res) => {
@@ -17,36 +19,17 @@ router.get("/fetchProducts", async (req, res) => {
 
 
 
-router.post("/createProduct", authUser.checkAuthHeader, upload.single('file'), async (req, res) => {
+router.post("/createProduct", authUser.checkAuthHeader, upload.single('file'), validateFile, async (req, res) => {
   console.log('Axios POST body: ', req.body);
   console.log('req.file:', req.file);
   const { title, description, price, category, selerId } = req.body;
 
   //Validation:
 
-  if (typeof title !== 'string' || title.trim().length === 0) {
-    console.log('כותרת המוצר חסרה או שהוזנה בפורמט לא תקין');
-    return res.status(400).send('כותרת המוצר חסרה או שהוזנה בפורמט לא תקין');
-  }
-
-  if (typeof description !== 'string' || description.trim().length === 0) {
-    console.log('תיאור המוצר חסר או שהוזן בפורמט לא תקין');
-    return res.status(400).send('תיאור המוצר חסר או שהוזן בפורמט לא תקין');
-  }
-
-  if ((typeof price !== 'number' && typeof price !== 'string') || parseFloat(price) <= 0) {
-    console.log('מחיר המוצר אינו תקין או שהוזן בפורמט שאינו תקני');
-    return res.status(400).send('מחיר המוצר אינו תקין או שהוזן בפורמט שאינו תקני');
-  }
-
-  if (typeof category !== 'string' || category.trim().length === 0) {
-    console.log('קטגוריית המוצר חסרה או שהוזנה בפורמט לא תקין');
-    return res.status(400).send('קטגוריית המוצר חסרה או שהוזנה בפורמט לא תקין');
-  }
-
-  if (typeof selerId !== 'string' || selerId.trim().length === 0) {
-    console.log('ה-selerId אינו תקין');
-    return res.status(400).send('ה-selerId אינו תקין');
+  const validationError = productValidations.validateProduct(title, description, price, category, selerId);
+  if (validationError) {
+    console.log(validationError);
+    return res.status(400).send(validationError);
   }
 
   const imgUrl = req.file.filename;
@@ -65,6 +48,13 @@ router.put("/deleteProduct", authUser.checkAuthHeader, async (req, res) => {
   const { productId } = req.body;
   console.log('productId :', productId);
 
+  //Validation:
+  const validationErrorProductId = productValidations.validProductId(productId);
+  if (validationErrorProductId) {
+    console.log(validationErrorProductId);
+    return res.status(400).send(validationErrorProductId);
+  }
+
   try {
     const product = await productController.deleteProduct(productId);
 
@@ -77,11 +67,18 @@ router.put("/deleteProduct", authUser.checkAuthHeader, async (req, res) => {
 });
 
 
-router.put('/editProduct', authUser.checkAuthHeader, upload.single('file'), async (req, res) => {
+router.put('/editProduct', authUser.checkAuthHeader, upload.single('file'),validateFile, async (req, res) => {
   console.log('Axios POST body: ', req.body);
   console.log('req.file:', req.file);
   const { title, description, price, category , productId } = req.body;
   const imgUrl = req.file.filename;
+
+  //Validation:
+  const validationError = productValidations.validateEditProduct(title, description, price, category, productId);
+  if (validationError) {
+    console.log(validationError);
+    return res.status(400).send(validationError);
+  }
 
   try { 
 

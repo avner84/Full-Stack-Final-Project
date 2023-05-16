@@ -108,11 +108,13 @@ const ProductEditingPage = () => {
 
         } catch (err) {
             if (!err?.response) {
-                setErrMsg('אין תשובה מהשרת');
-                
-            }
-            else{
-                setErrMsg('לא הצלחנו לעדכן את המוצר. נסה להתנתק ולהתחבר מחדש.');
+              setErrMsg('אין תשובה מהשרת');
+                          
+            } else if (err.response.status === 400) {
+              setErrMsg(err.response.data);
+              
+            } else {
+              setErrMsg('לא הצלחנו להעלות את המוצר. נסה להתנתק ולהתחבר מחדש.');
             }
         }
     }
@@ -206,6 +208,7 @@ const ProductEditingPage = () => {
                     <input type='file'
                     required
                     />
+                    <small>פורמטים תקינים לקבצי תמונה: PNG, JPEG, JPG ו-GIF.</small>
                 </div>
             </div>
 
