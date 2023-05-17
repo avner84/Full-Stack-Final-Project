@@ -24,8 +24,8 @@ router.post('/pay', authUser.checkAuthHeader, (req, res) => {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:3500/success",
-            "cancel_url": "http://localhost:3500/cancel"
+            "return_url": "http://localhost:3000/success",
+            "cancel_url": "http://localhost:3000/cancel"
         },
         "transactions": [{
             "amount": {
