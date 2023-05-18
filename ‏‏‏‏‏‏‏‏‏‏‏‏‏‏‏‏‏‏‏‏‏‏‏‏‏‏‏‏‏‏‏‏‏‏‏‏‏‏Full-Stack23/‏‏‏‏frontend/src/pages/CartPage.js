@@ -20,7 +20,8 @@ function CartPage() {
       {
         headers: {
           Authorization: `Bearer ${loginVerificationToken}`
-        }
+        },
+        withCredentials: true
       })
       .then((res) => {
         if (res.status === 200) {

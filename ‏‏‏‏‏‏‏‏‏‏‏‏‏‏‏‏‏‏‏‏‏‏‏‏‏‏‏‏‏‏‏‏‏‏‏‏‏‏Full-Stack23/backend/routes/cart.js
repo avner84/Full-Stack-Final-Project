@@ -1,33 +1,19 @@
 const router = require("express").Router();
 const authUser = require('../middleware/authUser');
 const cartController = require("../controllers/cartController");
+const cartValidations = require('../validations/cartValidations');
 
 router.post("/updateCartInDB",  authUser.checkAuthHeader, async (req, res) => {
   const { cartProducts, userId, totalAmount, totalPrice } = req.body;
 
   //Validation:
-
-  if (!Array.isArray(cartProducts) && typeof cartProducts !== 'object') {
-    console.log('עדכון עגלת קניות במסד הנתונים נכשל: cartProducts אינו מערך או אובייקט');
-    return res.status(400).send('עדכון עגלת קניות במסד הנתונים נכשל: cartProducts אינו מערך או אובייקט');
-  }
-  if (typeof totalAmount !== 'number' || totalAmount < 0) {
-    console.log('עדכון עגלת קניות במסד הנתונים נכשל: totalAmount אינו מספר תקין או שהערך שלילי');
-    return res.status(400).send('עדכון עגלת קניות במסד הנתונים נכשל: totalAmount אינו מספר תקין או שהערך שלילי');
-  }
+const validationError = cartValidations.validateCart(cartProducts, totalAmount, totalPrice, userId);
+if (validationError) {
+    console.log(validationError);
+    return res.status(400).send(validationError);
+}
   
-  if (typeof totalPrice !== 'number' || totalPrice < 0) {
-    console.log('עדכון עגלת קניות במסד הנתונים נכשל: totalPrice אינו מספר תקין או שהערך שלילי');
-    return res.status(400).send('עדכון עגלת קניות במסד הנתונים נכשל: totalPrice אינו מספר תקין או שהערך שלילי');
-  }
-  
-  if (typeof userId !== 'string' || userId.trim().length === 0) {
-    console.log('עדכון עגלת קניות במסד הנתונים נכשל: userId אינו מחרוזת תקינה');
-    return res.status(400).send('עדכון עגלת קניות במסד הנתונים נכשל: userId אינו מחרוזת תקינה');
-  }
-  
-    
-
+   
   try {
     const updatedCart = await cartController.updateCartInDB(
       cartProducts,
@@ -44,8 +30,17 @@ router.post("/updateCartInDB",  authUser.checkAuthHeader, async (req, res) => {
 
 
 router.get("/fetchCartFromDB", async (req, res) => {
-  try {
-    const userId = req.query["userId"];
+  
+  const userId = req.query["userId"];
+
+  //Validation:
+  const validationErrorUsertId = cartValidations.validUserId(userId);
+  if (validationErrorUsertId) {
+      console.log(validationErrorUsertId);
+      return res.status(400).send(validationErrorUsertId);
+  }
+
+  try {  
     const cart = await cartController.fetchCart(userId);
     console.log("cart :", cart);
 

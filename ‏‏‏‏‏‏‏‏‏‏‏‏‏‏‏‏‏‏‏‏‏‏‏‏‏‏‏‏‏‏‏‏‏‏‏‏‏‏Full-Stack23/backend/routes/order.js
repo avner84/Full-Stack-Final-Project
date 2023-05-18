@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authUser = require('../middleware/authUser');
 const orderController = require('../controllers/orderController');
+const ordersValidations = require('../validations/ordersValidations')
 
 
 router.post('/pay', authUser.checkAuthHeader, orderController.createPayment);
@@ -18,15 +19,10 @@ router.post("/updateOrderInDB", authUser.checkAuthHeader, async (req, res) => {
 
     //Validation:
 
-    if (!Array.isArray(orders) && typeof orders !== 'object') {
-        console.log('עדכון ההזמנות במסד הנתונים נכשל: orders אינו מערך או אובייקט');
-        return res.status(400).send('עדכון ההזמנות במסד הנתונים נכשל: orders אינו מערך או אובייקט');
-    }
-
-
-    if (typeof userId !== 'string' || userId.trim().length === 0) {
-        console.log('עדכון ההזמנות במסד הנתונים נכשל: userId אינו מחרוזת תקינה');
-        return res.status(400).send('עדכון ההזמנות במסד הנתונים נכשל: userId אינו מחרוזת תקינה');
+    const validationError = ordersValidations.validateOrders(orders, userId);
+    if (validationError) {
+        console.log(validationError);
+        return res.status(400).send(validationError);
     }
 
     try {
@@ -41,8 +37,18 @@ router.post("/updateOrderInDB", authUser.checkAuthHeader, async (req, res) => {
 });
 
 router.get("/fetchOrdersFromDB", async (req, res) => {
+
+    const userId = req.query["userId"];
+
+    //Validation:
+    const validationErrorUsertId = ordersValidations.validUserId(userId);
+    if (validationErrorUsertId) {
+        console.log(validationErrorUsertId);
+        return res.status(400).send(validationErrorUsertId);
+    }
+
     try {
-        const userId = req.query["userId"];
+
         const orderDetails = await orderController.fetchOrders(userId);
         console.log('orders :', orderDetails);
 
